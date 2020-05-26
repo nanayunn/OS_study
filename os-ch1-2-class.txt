@@ -1,0 +1,79 @@
+### <5월 22일 - OS 교육_Exercise 리뷰 & Chapter 1>
+- 커널에 현재 시간이 항상 기록될까?
+	- 현대의 OS들은 시간을 관리한다. 즉, 커널에서 시간을 관리하는 것이 맞다.
+	- 프로그램 간의 시간 동기화(sync)가 필요하기 때문에, 하나의 동일한 시간을 설정해 둘 필요가 있다.
+	- NTP : 서버로부터 시간을 가져와서 주기적으로 동기화한다.
+	- 이렇게 동기화된 시간은 커널에도 기록이 된다.
+	- 하나의 시간 정보를 기준으로 그것을 공유하는 것이 효율적 *** 메인 보드의 수은전지 -> 시계 배터리
+	- NTP 업데이트 => 커널 업데이트 => RTC 업데이트
+- 사용자가 직접 (사용자-커널)모드를 변경하는 것은(OS 존재 의미가 사라짐) 절대 허가가 되지 않는다.
+- 사용자-커널 모드는 함께 작동하며 동기화되는 것이 아니다.
+
+- 프로세스 vs 스레드
+	- 메모리의 공유 여부에 따라 달라진다.
+- deadlock(교착상태)
+	- https://jhnyang.tistory.com/2 참고..
+	- A와 B의 실행 순서가 순차적이지 않을 때, 두 개의 프로세스에서 이용하고자 하는 자원이 중복된다면
+	- 서로 확보하고 있는 자원을 확보하기 위해 무한 대기 상태에 들어가게 된다.
+	- ex) 타이머에 의한 교착상태
+- 가상화
+	- CPU, Memory, Storage, I/O = 하드웨어
+	- Process - Kenel - VM 의 형태로 구축
+	- VM : 커널의 입장에서 하드웨어로 인식될 수 있도록 하는 것.
+	- OS의 종류에 따라 VM이 hypervisor인지 인식할 수도, 없을 수도 있다
+
+### <0525 OS 수업>
+- Operating System Structure
+	-> 프로세스가 잘 돌아가도록 하는 환경
+- user program이 돌아가는 동안 OS는 무엇을 할까?
+	- 프로그램이 돌아가도록 커널이 환경을 할당(커널 서비스)
+- 커널 모드 != 커널 서비스
+- 커널이 하는 것
+1. 파일 서비스
+2. 통신
+3. 오류 감지
+4. resource allocation
+5. Accounting(예를 들면 작업관리자)
+>>os system call
+>>ps 명령어 => PID와 Process name
+>>프로그램의 addr, stat 알려줌
+
+6. protection&security
+
+Rbac(role-based access conrtol)
+접근제어장치
+그룹별 오너
+네트워크 관련 기능은 access 기반으로 많이 한다.
+ex) apache를 루트 권한으로 설정 시, apache 상에 사소한 문제 하나가 발생되면 큰 영향
+trap
+사용자 address(logical address) => physical address로 변환할때(transition)
+메모리 오 접근(권한 문제)
+*VPN
+Network application
+두 개의 피시가 같은 네트워크 인것 처럼, 같은 도메인에 있는 것 처럼!
+system call != function call
+intruction을 하나 실행하기 위하여 어떤 것들이 작동하였는가
+시작지점 : trap
+Loop로 파일을 입출력하는 이유는 무엇일까?
+파일을 read, write할 공간이 있는지 확인하기 위해서
+
+*ltrace : 어떤 C 라이브러리 함수를 호출하였는가?
+
+*stack
+function call에서 주로 쓰임
+레지스터가 부족할 때 쓰임
+중첩되는 function call의 데이터를 차곡차곡 쌓아 return
+예시를 찾아볼 필요!
+프로세스 간 메모리는 구분된다.
+디버깅의 방법
+로그 분석
+사후 분석
+프로그램을 죽이면서 디버깅
+
+*
+코드 덤프 : 커널이 Exception을 죽였을 때 남기는 것
+예외처리를 할 당시의 모든 환경사항을 저장(X-ray)
+커널이 죽으면 메모리 전체가 Dump되는 현상이 있음
+
+*
+주기적인 샘플링 기법.
